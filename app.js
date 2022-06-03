@@ -4,8 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// routers
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+// import index sequelize instance
+const index = require('./models/index');
+const { sequelize } = require('./models/index');
 
 var app = express();
 
@@ -21,6 +26,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection to database successfull!');
+  })
+  .catch(err => {
+    console.error('Unable to connect to database', err);
+});
+
+sequelize.sync({ force: true })
+  .then(() => {
+    console.log('Models synced successfully!');
+  })
+  .catch(err => {
+    console.error('Unable to sync models', err);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
