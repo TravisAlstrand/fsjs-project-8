@@ -1,23 +1,23 @@
 var express = require('express');
 var router = express.Router();
-const book = require('../models').Book;
+const bookModel = require('../models').Book;
 
 /* Handler function to wrap each route. */
-function asyncHandler(cb){
-  return async(req, res, next) => {
-    try {
-      await cb(req, res, next)
-    } catch(error){
-      // Forward error to the global error handler
-      next(error);
-    }
-  }
-}
+// function asyncHandler(cb){
+//   return async(req, res, next) => {
+//     try {
+//       await cb(req, res, next)
+//     } catch(error){
+//       // Forward error to the global error handler
+//       next(error);
+//     }
+//   }
+// }
 
 /* GET home page. */
-router.get('/', asyncHandler(async (req, res, next) => {
-  const allBooks = await book.findAll();
-  res.render('index', {books: allBooks, title: "Library Assistant"});
-}));
+router.get('/', async function(req, res, next) {
+  const books = await bookModel.findAll();
+  res.render('index', { books, title: 'Books' });
+});
 
 module.exports = router;
