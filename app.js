@@ -6,7 +6,6 @@ var logger = require('morgan');
 
 /* routers */
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 /* import index sequelize instance */
 const index = require('./models/index');
@@ -25,7 +24,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 /* check connection with library database */
 sequelize.authenticate()
