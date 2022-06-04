@@ -14,9 +14,12 @@ a {
     color: black;
   }
 
-a.button, input[type=submit] {
+  a.button, input[type=submit] {
+    background: #019875;
+  }
+
+a.button, a.button-delete, input[type=submit] {
   color: white;
-  background: #019875;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
   padding: 10px 14px 12px;
   font-size: 14px;
@@ -24,7 +27,9 @@ a.button, input[type=submit] {
   cursor: pointer;
 }
 
-form a.button, input[type=submit] {
+
+
+form a.button, form a.button-delete, input[type=submit] {
   margin-left: 140px;
   transition: 0.4s;
 }
@@ -33,9 +38,19 @@ input[type=submit] {
   border: 0;
 }
 
-  a.button:hover, input[type=submit]:hover {
-    background-color: #01b189;
-  }
+a.button:hover, input[type=submit]:hover {
+  background-color: #01b189;
+}
+
+a.button-delete, 
+input.button-delete{
+  background-color:rgb(153, 10, 10);
+}
+
+a.button-delete:hover,
+input.button-delete:hover {
+  background-color:rgb(226, 14, 14);
+}
 
 p {
   margin: 20px auto;
