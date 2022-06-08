@@ -27,8 +27,6 @@ a.button, a.button-delete, input[type=submit] {
   cursor: pointer;
 }
 
-
-
 form a.button, form a.button-delete, input[type=submit] {
   margin-left: 140px;
   transition: 0.4s;

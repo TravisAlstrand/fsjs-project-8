@@ -2,9 +2,10 @@ extends layout
 
 block content
   h1= title
-  p 
+  p
     a(class='button', href='/books/new') Create New Book
-  
+  form 
+    input(class='search', type='search', placeholder='Search...')
   table 
     thead 
       tr
