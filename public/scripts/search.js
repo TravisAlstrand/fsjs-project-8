@@ -7,6 +7,8 @@ function handleSearch() {
   // set the typed text to upper case and store as variable
   let searchInput = searchBar.value.toUpperCase();
   console.log(searchInput);
-}
 
-searchBar.addEventListener('keyup', () => handleSearch());
+}
+if (searchBar) {
+  searchBar.addEventListener('keyup', () => handleSearch());
+}
