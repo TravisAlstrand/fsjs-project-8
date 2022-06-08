@@ -37,7 +37,7 @@ router.post('/books/new', asyncHandler(async (req, res) => {
   try {
     // try to create new book
     book = await bookModel.create(req.body);
-    res.redirect('/books/info/' + book.id);
+    res.redirect('/books');
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       // if there error is book validation, reload form showing errors
@@ -48,12 +48,6 @@ router.post('/books/new', asyncHandler(async (req, res) => {
       throw error;
     }
   }
-}));
-
-/* GET book detail page */
-router.get('/books/info/:id', asyncHandler(async (req, res) => {
-  const book = await bookModel.findByPk(req.params.id);
-  res.render('book-info', { book });
 }));
 
 /* GET update book form page */
@@ -73,7 +67,7 @@ router.post('/books/update/:id', asyncHandler(async (req, res) => {
     book = await bookModel.findByPk(req.params.id);
     if (book) {
       await book.update(req.body);
-      res.redirect('/books/info/' + book.id);
+      res.render('book-updated', { book });
     } else {
       res.sendStatus(404);
     }
