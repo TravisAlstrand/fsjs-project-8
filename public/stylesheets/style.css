@@ -108,3 +108,8 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+.flex {
+  display: flex;
+  justify-content: center;
+}

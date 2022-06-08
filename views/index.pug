@@ -4,8 +4,9 @@ block content
   h1= title
   p
     a(class='button', href='/books/new') Create New Book
-  form 
+  form(action='/books/index', method='post', class='flex') 
     input(class='search', type='search', placeholder='Search...')
+    a(class='button', href='/books/index') Search
   table 
     thead 
       tr

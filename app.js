@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 app.use(function(err, req, res, next) {
   // check if error is a 404 first
   if (err.status === 404) {
-    err.message = 'Ruh Roh! That page does not exist!';
+    err.message = err.message || 'Ruh Roh! That page does not exist!';
     res.render('page-not-found', { err });
   } else {
     err.message = err.message || 'Ruh Roh! There was a server error!';

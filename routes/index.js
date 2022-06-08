@@ -51,17 +51,19 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 }));
 
 /* GET update book form page */
-router.get('/books/update/:id', asyncHandler(async (req, res) => {
+router.get('/books/update/:id', asyncHandler(async (req, res, next) => {
   const book = await bookModel.findByPk(req.params.id);
   if (book) {
     res.render('update-book', { book })
   } else {
-    res.sendStatus(404);
+    const error = new Error("Book not found in database");
+    error.status = 404;
+    next(error);
   }
 }));
 
 /* POST updated info for book */
-router.post('/books/update/:id', asyncHandler(async (req, res) => {
+router.post('/books/update/:id', asyncHandler(async (req, res, next) => {
   let book;
   try {
     book = await bookModel.findByPk(req.params.id);
@@ -69,7 +71,9 @@ router.post('/books/update/:id', asyncHandler(async (req, res) => {
       await book.update(req.body);
       res.render('book-updated', { book });
     } else {
-      res.sendStatus(404);
+      const error = new Error("Book not found in database");
+      error.status = 404;
+      next(error);
     }
   }
   catch (error) {
@@ -84,25 +88,41 @@ router.post('/books/update/:id', asyncHandler(async (req, res) => {
 }));
 
 /* GET delete book page */
-router.get('/books/:id/delete', asyncHandler(async (req, res) => {
+router.get('/books/:id/delete', asyncHandler(async (req, res, next) => {
   const book = await bookModel.findByPk(req.params.id);
   if (book) {
     res.render('delete-confirm', { book });
   } else {
-    res.sendStatus(404);
+    const error = new Error("Book not found in database");
+    error.status = 404;
+    next(error);
   }
 })); 
 
 /* DELETE book from db */
-router.post('/books/:id/delete', asyncHandler(async (req, res) => {
+router.post('/books/:id/delete', asyncHandler(async (req, res, next) => {
   const book = await bookModel.findByPk(req.params.id);
   if (book) {
     const bookTitle = book.title;
     await book.destroy();
     res.render('book-deleted', { bookTitle });
   } else {
-    res.sendStatus(404);
+    const error = new Error("Book not found in database");
+    error.status = 404;
+    next(error);
   }
+}));
+
+/* search attempt */
+router.post('/books/index', asyncHandler(async (req, res) => {
+  const userQuery = req.body;
+  const newBooks = await bookModel.findAll({
+    where: {
+      
+    }
+  });
+  console.log(userQuery);
+  // res.render('index', { title: 'Books', books: newBooks })
 }));
 
 module.exports = router;
