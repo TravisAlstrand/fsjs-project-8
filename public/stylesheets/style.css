@@ -109,7 +109,11 @@ input[type=text] {
   color: rgb(236, 15, 15);
 }
 
-.flex {
-  display: flex;
-  justify-content: center;
+input[type=submit].search-btn {
+  margin-left: 1em;
+}
+
+.page-btn {
+  margin-top: 1em;
+  margin-right: 1em;
 }

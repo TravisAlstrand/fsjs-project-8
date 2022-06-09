@@ -1,6 +1,7 @@
 var express = require('express');
 const res = require('express/lib/response');
 var router = express.Router();
+const { Op } = require("sequelize");
 const bookModel = require('../models').Book;
 
 /* Handler function to wrap each route */
@@ -22,8 +23,35 @@ router.get('/', (req, res) => {
 
 /* GET full books list */
 router.get('/books', asyncHandler(async (req, res) => {
-  const books = await bookModel.findAll();
-  res.render('index', { books, title: 'Books' });
+
+  // variables parsed to INTs from url query page & size
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+
+  // variables to determine limit & offset default values
+  let page = 0;
+  let size = 15;
+
+  // check if page value from query is a number & not negative
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;
+  };
+
+  // check if size value from query is a number & not negative & not larger than 15
+  if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 15) {
+    size = sizeAsNumber;
+  }
+
+  const books = await bookModel.findAndCountAll({
+    // how many objects to show per page
+    limit: size,
+    // how many objects to skip (ex. page 0(1st) * 10perpage = skip 0, page 1(2nd) * 10perpage = skip 10)
+    offset: page * size
+  });
+  res.render('index', { books: books.rows, 
+                        currentPage: page,
+                        totalPages: Math.ceil(books.count / size), 
+                        title: 'Books' });
 }));
 
 /* GET new book form page */
@@ -114,15 +142,19 @@ router.post('/books/:id/delete', asyncHandler(async (req, res, next) => {
 }));
 
 /* search attempt */
-router.post('/books/index', asyncHandler(async (req, res) => {
-  const userQuery = req.body;
+router.get('/books/index', asyncHandler(async (req, res) => {
+  const userQuery = req.query.term;
   const newBooks = await bookModel.findAll({
     where: {
-      
+      [Op.or]: [
+        { title: { [Op.like]: `%${userQuery}%` } },
+        { author: { [Op.like]: `%${userQuery}%` } },
+        { genre: { [Op.like]: `%${userQuery}%` } },
+        { year: { [Op.like]: `%${userQuery}%` } } 
+      ]
     }
   });
-  console.log(userQuery);
-  // res.render('index', { title: 'Books', books: newBooks })
+  res.render('index', { title: `Search for '${userQuery}'`, books: newBooks, search: true})
 }));
 
 module.exports = router;

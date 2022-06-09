@@ -4,9 +4,15 @@ block content
   h1= title
   p
     a(class='button', href='/books/new') Create New Book
-  form(action='/books/index', method='post', class='flex') 
-    input(class='search', type='search', placeholder='Search...')
-    a(class='button', href='/books/index') Search
+
+  if(search)
+    p 
+      a(class='button', href='/books') Clear Search
+
+  form(action='/books/index') 
+    input(class='search', type='search', name='term', placeholder='Search...')
+    input(class='button search-btn', type='submit', value='Search')
+  
   table 
     thead 
       tr
@@ -22,3 +28,11 @@ block content
           td= book.author
           td= book.genre
           td= book.year
+  br
+  
+  - for (i = 0; i < totalPages; i++)
+      a(class='button page-btn', href='/books/?page=' + (i) + '&size=15')= i+1
+
+
+
+
