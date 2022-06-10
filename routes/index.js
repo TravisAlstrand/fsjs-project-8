@@ -78,43 +78,6 @@ router.post('/books/new', asyncHandler(async (req, res) => {
   }
 }));
 
-/* GET update book form page */
-router.get('/books/update/:id', asyncHandler(async (req, res, next) => {
-  const book = await bookModel.findByPk(req.params.id);
-  if (book) {
-    res.render('update-book', { book })
-  } else {
-    const error = new Error("Book not found in database");
-    error.status = 404;
-    next(error);
-  }
-}));
-
-/* POST updated info for book */
-router.post('/books/update/:id', asyncHandler(async (req, res, next) => {
-  let book;
-  try {
-    book = await bookModel.findByPk(req.params.id);
-    if (book) {
-      await book.update(req.body);
-      res.render('book-updated', { book });
-    } else {
-      const error = new Error("Book not found in database");
-      error.status = 404;
-      next(error);
-    }
-  }
-  catch (error) {
-    if (error.name === 'SequelizeValidationError') {
-      book = await bookModel.build(req.body);
-      book.id = req.params.id;
-      res.render('update-book', { book, errors: error.errors });
-    } else {
-      throw error;
-    }
-  }
-}));
-
 /* GET delete book page */
 router.get('/books/:id/delete', asyncHandler(async (req, res, next) => {
   const book = await bookModel.findByPk(req.params.id);
@@ -143,8 +106,24 @@ router.post('/books/:id/delete', asyncHandler(async (req, res, next) => {
 
 /* search attempt */
 router.get('/books/index', asyncHandler(async (req, res) => {
+
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+
+  let page = 0;
+  let size = 15;
+
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;
+  };
+
+  if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 15) {
+    size = sizeAsNumber;
+  }
+
   const userQuery = req.query.term;
-  const newBooks = await bookModel.findAll({
+
+  const newBooks = await bookModel.findAndCountAll({
     where: {
       [Op.or]: [
         { title: { [Op.like]: `%${userQuery}%` } },
@@ -152,9 +131,52 @@ router.get('/books/index', asyncHandler(async (req, res) => {
         { genre: { [Op.like]: `%${userQuery}%` } },
         { year: { [Op.like]: `%${userQuery}%` } } 
       ]
-    }
+    },
+    limit: size,
+    offset: page * size
   });
-  res.render('index', { title: `Search for '${userQuery}'`, books: newBooks, search: true})
+  res.render('index', { title: `Search for '${userQuery}'`,
+                        books: newBooks.rows,
+                        search: true,
+                        currentPage: page,
+                        totalPages: Math.ceil(books.count / size)});
+}));
+
+/* GET update book form page */
+router.get('/books/:id', asyncHandler(async (req, res, next) => {
+  const book = await bookModel.findByPk(req.params.id);
+  if (book) {
+    res.render('update-book', { book })
+  } else {
+    const error = new Error("Book not found in database");
+    error.status = 404;
+    next(error);
+  }
+}));
+
+/* POST updated info for book */
+router.post('/books/:id', asyncHandler(async (req, res, next) => {
+  let book;
+  try {
+    book = await bookModel.findByPk(req.params.id);
+    if (book) {
+      await book.update(req.body);
+      res.render('book-updated', { book });
+    } else {
+      const error = new Error("Book not found in database");
+      error.status = 404;
+      next(error);
+    }
+  }
+  catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      book = await bookModel.build(req.body);
+      book.id = req.params.id;
+      res.render('update-book', { book, errors: error.errors });
+    } else {
+      throw error;
+    }
+  }
 }));
 
 module.exports = router;

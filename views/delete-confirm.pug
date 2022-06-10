@@ -4,13 +4,13 @@ block content
   h1(class='error') WARNING! 
   h2 Are you SURE you want to 
     span(class='error') delete 
-    span #{book.title}??
+    span= '"' + book.title + '"??'
   p This action 
     span(class='error') CANNOT 
     span be undone!
   
   form(action='/books/' + book.id + '/delete', method='post')
     p
-      a(class='button', href='/books/update/' + book.id) CANCEL! 
+      a(class='button', href='/books/' + book.id) CANCEL! 
     p 
       input(class='button-delete', type='submit', value='DELETE BOOK')
