@@ -11,16 +11,28 @@ block content
   form(action='/books/new', method='post')
     p 
       label(for='title') Title
-      input(type='text', name='title', id='title')
+      if(book)
+        input(type='text', name='title', id='title', value= book.title)
+      else
+        input(type='text', name='title', id='title')
     p 
       label(for='author') Author
-      input(type='text', name='author', id='author')
+      if(book)
+        input(type='text', name='author', id='author', value= book.author)
+      else 
+        input(type='text', name='author', id='author')
     p 
       label(for='genre') Genre
-      input(type='text', name='genre', id='genre')
+      if(book)
+        input(type='text', name='genre', id='genre', value= book.genre)
+      else 
+        input(type='text', name='genre', id='genre')
     p 
       label(for='year') Year
-      input(type='text', name='year', id='year')
+      if(book)
+        input(type='text', name='year', id='year', value= book.year)
+      else 
+        input(type='text', name='year', id='year')
     p 
       input(type='submit', value='Create New Book')
     p 
