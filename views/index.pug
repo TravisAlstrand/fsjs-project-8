@@ -31,7 +31,10 @@ block content
   br
   
   - for (i = 0; i < totalPages; i++)
-      a(class='button page-btn', href='/books/?page=' + (i) + '&size=15')= i+1
+      if (search)
+        a(class='button page-btn', href='/books/index?term=' + query + '&page=' + (i) + '&size=15')= i+1
+      else
+        a(class='button page-btn', href='/books/?page=' + (i) + '&size=15')= i+1
 
 
 

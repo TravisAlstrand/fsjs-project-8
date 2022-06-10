@@ -136,10 +136,11 @@ router.get('/books/index', asyncHandler(async (req, res) => {
     offset: page * size
   });
   res.render('index', { title: `Search for '${userQuery}'`,
+                        query: userQuery,
                         books: newBooks.rows,
                         search: true,
                         currentPage: page,
-                        totalPages: Math.ceil(books.count / size)});
+                        totalPages: Math.ceil(newBooks.count / size)});
 }));
 
 /* GET update book form page */
